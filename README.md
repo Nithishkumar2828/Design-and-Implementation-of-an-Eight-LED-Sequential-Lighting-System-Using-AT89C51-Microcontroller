@@ -1,134 +1,66 @@
 # Design-and-Implementation-of-an-Eight-LED-Sequential-Lighting-System-Using-AT89C51-Microcontroller
-Design and Implementation of an Eight-LED Sequential Lighting System Using AT89C51 Microcontroller using Proteus
+## Aim
+To interface an LED with the AT89C51/8051 microcontroller and blink it continuously using Assembly Language.
 
-overview
-This project presents the design and implementation of an eight-LED sequential lighting system using the AT89C51 microcontroller.
+## Apparatus Required
+AT89C51/8051 Microcontroller, Development Board/Proteus, LED, 330 Ω Resistor, 11.0592 MHz Crystal, Power Supply (5 V), Keil µVision, Proteus.
 
-Eight LEDs are interfaced with Port 2 (P2.0–P2.7) of the AT89C51. The microcontroller controls the LEDs such that they glow one after another with a predefined time delay, producing a running LED effect.
+### Theory
+The 8051 microcontroller has four 8-bit I/O ports. An LED connected to Port 2 can be turned ON and OFF by writing logic 0 or logic 1 depending on the connection. A software delay creates the blinking effect.
 
-The project demonstrates basic concepts of 8051 microcontroller programming, GPIO interfacing, bit manipulation, and software delay generation.
-
-Objectives
-To interface eight LEDs with the AT89C51 microcontroller.
-To understand the operation of 8051 I/O ports.
-To generate a sequential LED lighting pattern.
-To implement software delay using Embedded C.
-To understand bit shifting and port manipulation.
-To simulate the circuit using Proteus.
-
-Hardware Requirements
-
-Component	Quantity
-AT89C51 Microcontroller	1
-LED	8
-Resistor 330 Ω	8
-Crystal Oscillator 11.0592 MHz	1
-Capacitor 33 pF	2
-5 V DC Power Supply	1
-Breadboard	1
-Connecting Wires	As required
+### Circuit Connections
+LED Anode → +5V through 330 Ω resistor, LED Cathode → P2.0 (active LOW) or alternatively P2.0→330 Ω→LED→GND (active HIGH).
 
 
-Software Requirements
-Keil µVision – For Embedded C programming and HEX file generation
-Proteus – For circuit simulation
 
-circuit connections
-AT89C51                    LED
+### Algorithm
+1. Start the program.
 
-P2.0 ───── 330Ω ───── LED1
-P2.1 ───── 330Ω ───── LED2
-P2.2 ───── 330Ω ───── LED3
-P2.3 ───── 330Ω ───── LED4
-P2.4 ───── 330Ω ───── LED5
-P2.5 ───── 330Ω ───── LED6
-P2.6 ───── 330Ω ───── LED7
-P2.7 ───── 330Ω ───── LED8
+2. Configure Port 2 as output.
 
-working principle
-The AT89C51 sends an 8-bit pattern to Port 2. Only one bit is set at a time, causing one LED to glow.
-The sequence is:
-00000001 → 00000010 → 00000100 → 00001000
-     ↓
-00010000 → 00100000 → 01000000 → 10000000
+3. Turn LED ON.
 
-Therefore:
+4. Generate delay.
 
-LED1 → LED2 →LED3 → LED4 → LED5 → LED6 → LED7 → LED8
+5. Turn LED OFF.
 
-embedded c program
+6. Generate delay.
+
+7. Repeat forever.
+
+### 8051 Assembly Program
 ```
-#include <reg51.h>
+ORG 0000H
 
-void delay(void)
-{
-     unsigned int i, j;
+START:
+   MOV P2,#00H      ; LED ON (active LOW)
+   ACALL DELAY
+   MOV P2,#0FFH     ; LED OFF
+   ACALL DELAY
+   SJMP START
 
-    for(i = 0; i < 500; i++)
-    {
-        for(j = 0; j < 120; j++);
-    }
-}
+DELAY:
+   MOV R7,#255
+L1: MOV R6,#255
+L2: DJNZ R6,L2
+   DJNZ R7,L1
+   RET
 
-void main(void)
-{
-    unsigned char i;
-
-    while(1)
-    {
-        for(i = 0; i < 8; i++)
-        {
-            P2 = (1 << i);
-            delay();
-        }
-    }
-}
+END
 ```
-Simulation
+### Flow of Execution
+  Initialize → LED ON → Delay → LED OFF → Delay → Repeat
 
-The circuit can be simulated in Proteus using the following procedure:
+### Observation
+  The LED connected to Port 2 blinks continuously.
 
-Create the AT89C51 circuit.
-Connect eight LEDs to Port 2.
-Add 330 Ω resistors in series with the LEDs.
-Connect the crystal oscillator and capacitors.
-Add the reset and power supply connections.
-Write the Embedded C program in Keil µVision.
-Compile the program and generate the .hex file.
-Load the HEX file into the AT89C51 model in Proteus.
-Start the simulation.
-Observe the sequential LED operation.
+## Output 
 
-project structure
+<img width="941" height="673" alt="Screenshot 2026-10-27 133953" src="https://github.com/user-attachments/assets/4e6a3c6f-fe96-4214-a9d0-ca5106698f90" />
 
-Eight-LED-Sequential-Lighting/
-│
-├── README.md
-│
-├── src/
-│   └── led_sequence.c
-│
-├── hex/
-│   └── led_sequence.hex
-│
-├── simulation/
-│   └── led_sequence.pdsprj
-│
-└── images/
-    ├── circuit.png
-    └── simulation.png
-circuit diagram
-<img width="1080" height="760" alt="image" src="https://github.com/user-attachments/assets/bacd976e-c7d2-4bb4-b29b-5abf7a37f432" />
+<img width="976" height="613" alt="Screenshot 2026-10-27 133922" src="https://github.com/user-attachments/assets/31ed9c0d-6132-4ec3-9247-424858d13bbd" />
 
-
-output
-LED1 → LED2 → LED3 → LED4
-                      ↓
-LED8 ← LED7 ← LED6 ← LED5
-
-Result
-The eight-LED sequential lighting system using the AT89C51 microcontroller** was successfully designed and implemented. The eight LEDs connected to Port 2 of the AT89C51 glowed **sequentially from LED1 to LED8 with a predefined time delay. The sequence was repeated continuously, producing a running-light effect.Thus, the required sequential LED lighting operation was successfully achieved and verified through simulation.
-
-
+## Result
+  The LED blinking program using the 8051 microcontroller was implemented and verified successfully.
 
 
